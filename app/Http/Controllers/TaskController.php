@@ -2,25 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\project;
+use App\Models\task;
 use Illuminate\Http\Request;
 
-class ProjectController extends Controller
+class TaskController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return project::all();
+        return task::all();
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(project $project)
+    public function show(task $task)
     {
-        return $project;
+        return $task;
     }
 
     /**
@@ -29,32 +29,35 @@ class ProjectController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'project_id' => 'required',
+            'user_id' => 'required',
             'title' => 'required',
             'description' => 'required',
+            'status' => 'required',
             'due_date' => 'required'
         ]);
         
-        $project = project::create($request->all());
+        $task = task::create($request->all());
 
-        return $this->response(201, 'Project created successfully', $project);
+        return $this->response(201, 'Task created successfully', $task);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, project $project)
+    public function update(Request $request, task $task)
     {
-        $project->update($request->all());
+        $task->update($request->all());
 
-        return $this->response(200, 'Project updated successfully', $project);
+        return $this->response(200, 'Task updated successfully', $task);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(project $project)
+    public function destroy(task $task)
     {
-        $project->delete();
+        $task->delete();
         
     }
 
