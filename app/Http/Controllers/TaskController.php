@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\task;
+use App\Exports\ExportTask;
+
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class TaskController extends Controller
 {
@@ -59,6 +62,49 @@ class TaskController extends Controller
     {
         $task->delete();
         
+    }
+
+    public function exportExcel(Request $request)
+    {
+        if (!$this->validateParams($request->all())) {
+            return $this->response(400, 'Invalid parameters', []);
+        }
+
+        $exporTask = new ExportTask($request->all());
+
+        return Excel::download($exporTask, 'tasks.xlsx', \Maatwebsite\Excel\Excel::XLSX);
+    }
+
+    private function validateParams($request)
+    {
+        $data = [
+            'status' => $request['status'],
+            'due_date' => $request['due_date'],
+            'created_date' => $request['created_date'],
+        ];
+
+        // check if due_date is not empty
+        if (!empty($data['due_date'])) {
+            // check if start_date and end_date are not empty
+            if (empty($data['due_date']['start_date']) || empty($data['due_date']['end_date'])) {
+                return false;
+            }
+        }  
+
+        // check if created_date is not empty
+        if (!empty($data['created_date'])) {
+            // check if start_date and end_date are not empty
+            if (empty($data['created_date']['start_date']) || empty($data['created_date']['end_date'])) {
+                return false;
+            }
+        }  
+        
+        // check if status and due_date are empty
+        if (empty($data['status']) && empty($data['due_date']) && empty($data['created_date'])) {
+            return false;
+        }
+        
+        return true;
     }
 
     /**
