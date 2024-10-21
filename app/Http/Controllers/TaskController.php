@@ -3,13 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Task;
+use App\Models\User;
 use App\Exports\ExportTask;
-
+use App\Jobs\JobSendEmailChangetask;
 use Illuminate\Http\Request;
-use Maatwebsite\Excel\Facades\Excel;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class TaskController extends Controller implements HasMiddleware
 {
@@ -59,14 +60,21 @@ class TaskController extends Controller implements HasMiddleware
     public function update(Request $request, Task $task)
     {
         $fields = $request->validate([
-            'project_id' => 'number',
+            'project_id' => 'numeric',
+            'user_id' => 'numeric',
             'title' => 'string',
             'description' => 'string',
             'status' => 'string',
             'due_date' => 'date'
         ]);
 
-        $request->user()->tasks()->update($fields);
+        $task->update($fields);
+
+        $dataTask = Task::find($task->id);
+
+        $user = User::find($dataTask->user_id);
+
+        JobSendEmailChangetask::dispatch($user->id, $task->id)->onQueue('default');
 
         return response(['message' => 'Successfully updated task']);
     }

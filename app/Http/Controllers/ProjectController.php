@@ -52,6 +52,12 @@ class ProjectController extends Controller implements HasMiddleware
      */
     public function update(Request $request, Project $project)
     {
+        $request->validate([
+            'title' => 'string',
+            'description' => 'string',
+            'due_date' => 'date'
+        ]);
+
         $project->update($request->all());
 
         return response(['message' => 'Successfully updated project']);
