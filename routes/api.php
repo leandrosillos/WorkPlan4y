@@ -21,6 +21,14 @@ Route::delete('/tasks/{task}', [TaskController::class, 'destroy']);
 Route::post('/tasks/export-excel', [TaskController::class, 'exportExcel']);
 Route::post('/tasks/export-pdf', [TaskController::class, 'exportPdf']);
 
+// create routes for users
+use App\Http\Controllers\UserController;
+Route::get('/users', [UserController::class, 'index']);
+Route::get('/users/{user}', [UserController::class, 'show']);
+Route::post('/users', [UserController::class, 'store']);
+Route::put('/users/{user}', [UserController::class, 'update']);
+Route::delete('/users/{user}', [UserController::class, 'destroy']);
+
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
 });
