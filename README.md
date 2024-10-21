@@ -1,66 +1,147 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+📝 WorkPlan4y
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+O projeto WorkPlan4y é uma aplicação web para gerenciamento de tarefas, com CRUD de usuários, projetos e tarefas. Ele conta com um sistema de autenticação de usuários e permite que somente usuários autenticados possam acessar os módulos de projetos e tarefas e a maioria das rotas de usuários via accessToken. A aplicação oferece a funcionalidade de atribuição de tarefas a diferentes usuários, notificação por e-mail a cada atualização de tarefa e exportação de relatórios em formatos Excel e PDF, com filtros por status, data de validade e data de criação.
 
-## About Laravel
+==============================================================================
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+🧪 Tecnologias
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Este projeto foi desenvolvido utilizando as seguintes tecnologias:
+Laravel 11: O framework PHP escolhido por sua robustez, simplicidade e eficiência para construir aplicações web completas.
+SQL Server: Utilizado como banco de dados relacional para armazenar os usuários, projetos e tarefas.
+Laravel Breeze: Kit starter simples e minimalista para autenticação de usuários.
+Eloquent ORM: Ferramenta ORM utilizada no Laravel para interagir de forma simples e intuitiva com o banco de dados.
+Laravel Queues: Utilizado para o envio de e-mails em fila para otimizar o processamento de notificações de tarefas.
+HTML & CSS: Utilizados para a criação do template de envio de email.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+==============================================================================
 
-## Learning Laravel
+🚀 Funcionalidades
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Autenticação de Usuários: Registro, login e gerenciamento de sessão com Laravel Breeze.
+CRUD de Usuários, Projetos e Tarefas: Gerencie usuários, crie projetos e atribua tarefas a diferentes membros.
+Relacionamento entre Tarefas e Projetos: Cada tarefa está vinculada a um projeto específico e a um usuário responsável. Cada projeto e usuário pode possuir diversas tarefas.
+Prazo de Entrega: Tarefas e projetos têm prazos de entrega definidos.
+Notificações por E-mail: O usuário responsável recebe um e-mail toda vez que uma tarefa é atualizada. Os e-mails são enviados por meio de uma fila, sendo processados a cada 1 minuto.
+Exportação de Relatórios: Relatórios podem ser exportados em formato Excel e PDF, com filtros por status, data de validade e data de criação.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+==============================================================================
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+🏗️ Infraestrutura
 
-## Laravel Sponsors
+Banco de Dados: SQL Server para armazenar usuários, projetos e tarefas.
+Filas de E-mail: Laravel Queues para envio de e-mails em segundo plano.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+==============================================================================
 
-### Premium Partners
+🛠️ Passo a Passo para Executar o Projeto
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+Pré-requisitos
+Certifique-se de ter os seguintes softwares instalados na sua máquina:
 
-## Contributing
+PHP 8.2
+Composer
+SQL Server
+Node.js e NPM
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Clone o repositório:
+`git clone https://github.com/leandrosillos/workplan4y.git`
+`cd workplan4y`
 
-## Code of Conduct
+Instale as dependências do PHP:
+`composer install`
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Instale as dependências do Node:
+`npm install`
 
-## Security Vulnerabilities
+Renomeie o arquivo .env.example para .env:
+`cp .env.example .env`
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Atualize o arquivo .env com as credenciais do seu banco de dados SQL Server:
 
-## License
+DB_CONNECTION=sqlsrv
+DB_HOST=127.0.0.1
+DB_PORT=1433
+DB_DATABASE=nome_do_banco
+DB_USERNAME=seu_usuario
+DB_PASSWORD=sua_senha
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Gere a chave da aplicação:
+`php artisan key:generate`
+
+Rode as migrações e seeders:
+Para criar as tabelas no banco de dados e popular com dados iniciais:
+`php artisan migrate --seed`
+
+Inicie o servidor de desenvolvimento:
+`php artisan serve`
+O projeto estará acessível em http://localhost:8000.
+
+Para processar as filas de e-mails, execute o seguinte comando:
+`php artisan queue:work`
+
+Isso garantirá que as notificações de atualização de tarefas sejam enviadas aos usuários.
+
+==============================================================================
+
+📄 Perguntas e Respostas
+
+1. Diferença entre Eloquent ORM e Query Builder no Laravel
+Eloquent ORM é uma implementação do Active Record em que cada modelo mapeia diretamente uma tabela do banco de dados, e cada instância do modelo representa uma linha nessa tabela. Ele oferece um nível mais alto de abstração e permite trabalhar com as relações entre tabelas de maneira natural através de métodos orientados a objetos.
+
+Query Builder é mais próximo do SQL puro e oferece uma maneira mais manual de construir consultas ao banco de dados. Ele não requer a criação de um modelo e é útil para consultas mais complexas ou de alta performance, quando a simplicidade do Eloquent não é suficiente.
+
+Prós e Contras:
+
+Eloquent ORM:
+Prós: Simplicidade ao manipular dados, fácil integração com as relações entre modelos, sintaxe orientada a objetos.
+Contras: Pode ser menos eficiente em consultas complexas, pois gera mais sobrecarga de memória.
+Query Builder:
+Prós: Maior controle sobre as consultas, melhor performance em casos complexos.
+Contras: Menos intuitivo para manipular relações entre tabelas, mais verboso.
+
+
+2. Como garantir a segurança de uma aplicação Laravel?
+Validação de Entrada: Sempre validar dados de entrada, especialmente os enviados por formulários. Use os recursos nativos de validação do Laravel (Request ou Validator) para garantir que apenas dados permitidos sejam aceitos.
+
+Proteção contra SQL Injection: O Eloquent e o Query Builder do Laravel automaticamente protegem contra SQL Injection usando bindings. Isso significa que os parâmetros são escapados corretamente.
+
+Criptografia de Dados Sensíveis: Senhas e outros dados sensíveis devem ser sempre criptografados. O Laravel usa bcrypt para senhas, mas outras informações também podem ser criptografadas utilizando Hash ou Crypt.
+
+
+3. Papel dos Middlewares no Laravel
+Os Middlewares no Laravel são responsáveis por filtrar as requisições HTTP que entram na aplicação. Eles fazem parte do pipeline de requisições e podem modificar ou interromper a requisição antes que ela atinja o controlador. Um exemplo comum é a autenticação de usuários.
+
+
+4. Gerenciamento de Migrations no Laravel
+Migrations no Laravel são uma maneira de versionar e controlar a estrutura do banco de dados. Eles permitem que você crie, modifique e remova tabelas e colunas de forma organizada.
+
+Boas práticas:
+
+Sempre mantenha as migrations em controle de versão (Git).
+Faça rollback e teste suas migrations em ambiente de desenvolvimento antes de rodá-las em produção.
+Use migrations para criar a estrutura básica de tabelas e seeders para popular dados iniciais.
+
+
+5. Diferença entre Transações e Savepoints no SQL Server
+Transações: São blocos de operações que podem ser confirmados (committed) ou revertidos (rollback) de uma vez. Se qualquer operação dentro de uma transação falhar, todas as operações podem ser revertidas.
+
+Savepoints: Permitem criar "pontos de salvamento" dentro de uma transação. Você pode reverter até o savepoint sem desfazer toda a transação.
+
+Exemplo em Laravel:
+
+php
+Copiar código
+DB::transaction(function () {
+    // Executa uma série de operações
+    User::create([...]);
+    Project::create([...]);
+    
+    // Se qualquer erro acontecer, o rollback será executado automaticamente.
+});
+
+==============================================================================
+
+📱 Contato
+Linkedin: https://www.linkedin.com/in/leandro-sillos/
+E-mail: sillosadm@gmail.com
