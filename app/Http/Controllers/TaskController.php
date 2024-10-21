@@ -7,6 +7,7 @@ use App\Exports\ExportTask;
 
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class TaskController extends Controller
 {
@@ -75,12 +76,81 @@ class TaskController extends Controller
         return Excel::download($exporTask, 'tasks.xlsx', \Maatwebsite\Excel\Excel::XLSX);
     }
 
+    public function exportPdf(Request $request){
+        $data = $this->validateParams($request->all());
+
+        if (!$data) {
+            return $this->response(400, 'Invalid parameters', []);
+        }
+
+        $tasks = $this->getTasks($data);
+
+        if ($tasks->isEmpty()) {
+            return $this->response(204, '', []);
+        }
+
+        $data = $this->getDataToPdf($tasks);
+        
+        $pdf = Pdf::loadView('task.taskPdf', ['data' => $data]);
+
+        $filePath = storage_path('app/public/exports/tasks.pdf');
+        $pdf->save($filePath);
+
+        return response()->download($filePath);
+    }
+
+    private function getDataToPdf($tasks)
+    {
+        $data = [];
+        foreach ($tasks as $task) {
+            $data[] = [
+                'id' => $task->id,
+                'project_id' => $task->project_id,
+                'user_id' => $task->user_id,
+                'title' => $task->title,
+                'description' => $task->description,
+                'status' => $task->status,
+                'due_date' => $task->due_date,
+                'created_at' => $task->created_at,
+                'updated_at' => $task->updated_at
+            ];
+        }
+
+        return $data;
+    }
+
+    private function getTasks($data) 
+    {
+        $query = Task::query();
+        
+        if (isset($data['status'])) {
+            $status = $data['status'];
+            $query->where('status', $status);
+        }
+
+        if (!empty($data['due_date'])) {
+            $due_start_date = $data['due_date']['start_date'];
+            $due_end_date = $data['due_date']['end_date'];
+
+            $query->orWhereBetween('due_date', [$due_start_date, $due_end_date]);
+        }
+
+        if (!empty($data['created_date'])) {
+            $created_start_date = $data['created_date']['start_date'];
+            $created_end_date = $data['created_date']['end_date'];
+
+            $query->orWhereBetween('due_date', [$created_start_date, $created_end_date]);
+        }
+
+        return $query->get();
+    }
+
     private function validateParams($request)
     {
         $data = [
             'status' => $request['status'],
-            'due_date' => $request['due_date'],
-            'created_date' => $request['created_date'],
+            'due_date' => isset($request['due_date']) ? $request['due_date'] : '',
+            'created_date' => isset($request['created_date']) ? $request['created_date'] : '',
         ];
 
         // check if due_date is not empty
@@ -104,7 +174,7 @@ class TaskController extends Controller
             return false;
         }
         
-        return true;
+        return $data;
     }
 
     /**
