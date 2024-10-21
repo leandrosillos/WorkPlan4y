@@ -2,23 +2,31 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\project;
+use App\Models\Project;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class ProjectController extends Controller
+class ProjectController extends Controller implements HasMiddleware
 {
+    public static function middleware()
+    {
+        return [
+            new Middleware('auth:sanctum')
+        ];
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return project::all();
+        return Project::all();
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(project $project)
+    public function show(Project $project)
     {
         return $project;
     }
@@ -34,40 +42,27 @@ class ProjectController extends Controller
             'due_date' => 'required'
         ]);
         
-        $project = project::create($request->all());
+        $response = Project::create($request->all());
 
-        return $this->response(201, 'Project created successfully', $project);
+        return response(['message' => 'Successfully created project', 'response' => $response]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, project $project)
+    public function update(Request $request, Project $project)
     {
         $project->update($request->all());
 
-        return $this->response(200, 'Project updated successfully', $project);
+        return response(['message' => 'Successfully updated project']);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(project $project)
+    public function destroy(Project $project)
     {
         $project->delete();
         
-    }
-
-    /**
-     * Builds a standardized response
-     */
-    private function response($code, $message, $data)
-    {
-        return response()->json([
-            'code' => $code, 
-            'message' => $message, 
-            'data' => $data
-        ], $code
-        );
     }
 }

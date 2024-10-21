@@ -4,9 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class UserController extends Controller
+class UserController extends Controller implements HasMiddleware
 {
+    public static function middleware()
+    {
+        return [
+            new Middleware('auth:sanctum')
+        ];
+    }
     /**
      * Display a listing of the resource.
      */
@@ -24,29 +32,13 @@ class UserController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required',
-            'password' => 'required'
-        ]);
-        
-        $user = user::create($request->all());
-
-        return $this->response(201, 'User created successfully', $user);
-    }
-
-    /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, user $user)
     {
-        $user->update($request->all());
+        $response = $user->update($request->all());
 
-        return $this->response(200, 'User updated successfully', $user);
+        return response(['message' => 'Successfully updated user', 'response' => $response]);
     }
 
     /**
@@ -56,18 +48,5 @@ class UserController extends Controller
     {
         $user->delete();
         
-    }
-
-    /**
-     * Builds a standardized response
-     */
-    private function response($code, $message, $data)
-    {
-        return response()->json([
-            'code' => $code, 
-            'message' => $message, 
-            'data' => $data
-        ], $code
-        );
     }
 }

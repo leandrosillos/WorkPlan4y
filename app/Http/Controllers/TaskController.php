@@ -2,27 +2,35 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\task;
+use App\Models\Task;
 use App\Exports\ExportTask;
 
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class TaskController extends Controller
+class TaskController extends Controller implements HasMiddleware
 {
+    public static function middleware()
+    {
+        return [
+            new Middleware('auth:sanctum')
+        ];
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return task::all();
+        return Task::all();
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(task $task)
+    public function show(Task $task)
     {
         return $task;
     }
@@ -32,34 +40,41 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $fields = $request->validate([
             'project_id' => 'required',
-            'user_id' => 'required',
             'title' => 'required',
             'description' => 'required',
             'status' => 'required',
             'due_date' => 'required'
         ]);
         
-        $task = task::create($request->all());
+        $response = $request->user()->tasks()->create($fields);
 
-        return $this->response(201, 'Task created successfully', $task);
+        return response(['message' => 'Successfully created task', 'response' => $response]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, task $task)
+    public function update(Request $request, Task $task)
     {
-        $task->update($request->all());
+        $fields = $request->validate([
+            'project_id' => 'number',
+            'title' => 'string',
+            'description' => 'string',
+            'status' => 'string',
+            'due_date' => 'date'
+        ]);
 
-        return $this->response(200, 'Task updated successfully', $task);
+        $request->user()->tasks()->update($fields);
+
+        return response(['message' => 'Successfully updated task']);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(task $task)
+    public function destroy(Task $task)
     {
         $task->delete();
         
@@ -68,7 +83,7 @@ class TaskController extends Controller
     public function exportExcel(Request $request)
     {
         if (!$this->validateParams($request->all())) {
-            return $this->response(400, 'Invalid parameters', []);
+            return response(['message' => 'Invalid parameters']);
         }
 
         $exporTask = new ExportTask($request->all());
@@ -80,13 +95,13 @@ class TaskController extends Controller
         $data = $this->validateParams($request->all());
 
         if (!$data) {
-            return $this->response(400, 'Invalid parameters', []);
+            return response(['message' => 'Invalid parameters']);
         }
 
         $tasks = $this->getTasks($data);
 
         if ($tasks->isEmpty()) {
-            return $this->response(204, '', []);
+            return response(['message' => 'Tasks not found']);
         }
 
         $data = $this->getDataToPdf($tasks);
@@ -175,18 +190,5 @@ class TaskController extends Controller
         }
         
         return $data;
-    }
-
-    /**
-     * Builds a standardized response
-     */
-    private function response($code, $message, $data)
-    {
-        return response()->json([
-            'code' => $code, 
-            'message' => $message, 
-            'data' => $data
-        ], $code
-        );
     }
 }
